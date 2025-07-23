@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Supervisor Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container" style="padding: 2rem;">
+        <h1>Test Supervisor Form</h1>
+        <button id="test-academic-btn" class="btn btn-primary">Test Academic Supervisor Form</button>
+        <button id="test-industrial-btn" class="btn btn-primary">Test Industrial Supervisor Form</button>
+        
+        <div id="test-results" style="margin-top: 2rem;">
+            <h2>Test Results:</h2>
+            <div id="results-content"></div>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modal container -->
+    <div id="modal-container" class="modal-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/forms.js"></script>
+
+    <script>
+        // Initialize data
+        dataManager.initializeData();
+        
+        // Login as admin for testing
+        auth.loginWithCredentials('admin@example.com', 'admin123', 'admin');
+        
+        // Test functions
+        function testAcademicSupervisorForm() {
+            console.log('Testing Academic Supervisor Form...');
+            showAddUserForm();
+            
+            // Wait for form to load, then simulate filling it
+            setTimeout(() => {
+                const roleSelect = document.querySelector('select[name="role"]');
+                if (roleSelect) {
+                    roleSelect.value = 'academic_supervisor';
+                    roleSelect.dispatchEvent(new Event('change'));
+                    
+                    // Check if fields are visible
+                    const academicFields = document.getElementById('academic-supervisor-fields');
+                    const isVisible = academicFields && academicFields.style.display !== 'none';
+                    
+                    document.getElementById('results-content').innerHTML += 
+                        `<p>Academic Supervisor fields visible: ${isVisible}</p>`;
+                    
+                    if (isVisible) {
+                        // Fill in test data
+                        const nameInput = document.querySelector('input[name="name"]');
+                        const emailInput = document.querySelector('input[name="email"]');
+                        const deptInput = document.querySelector('input[name="academicDepartment"]');
+                        const titleInput = document.querySelector('input[name="academicTitle"]');
+                        
+                        if (nameInput) nameInput.value = 'Dr. Test Academic';
+                        if (emailInput) emailInput.value = 'test.academic@example.com';
+                        if (deptInput) deptInput.value = 'Computer Science';
+                        if (titleInput) titleInput.value = 'Professor';
+                        
+                        document.getElementById('results-content').innerHTML += 
+                            `<p>Form fields filled successfully</p>`;
+                    }
+                }
+            }, 200);
+        }
+        
+        function testIndustrialSupervisorForm() {
+            console.log('Testing Industrial Supervisor Form...');
+            showAddUserForm();
+            
+            // Wait for form to load, then simulate filling it
+            setTimeout(() => {
+                const roleSelect = document.querySelector('select[name="role"]');
+                if (roleSelect) {
+                    roleSelect.value = 'industrial_supervisor';
+                    roleSelect.dispatchEvent(new Event('change'));
+                    
+                    // Check if fields are visible
+                    const industrialFields = document.getElementById('industrial-supervisor-fields');
+                    const isVisible = industrialFields && industrialFields.style.display !== 'none';
+                    
+                    document.getElementById('results-content').innerHTML += 
+                        `<p>Industrial Supervisor fields visible: ${isVisible}</p>`;
+                    
+                    if (isVisible) {
+                        // Fill in test data
+                        const nameInput = document.querySelector('input[name="name"]');
+                        const emailInput = document.querySelector('input[name="email"]');
+                        const companyInput = document.querySelector('input[name="company"]');
+                        const jobTitleInput = document.querySelector('input[name="jobTitle"]');
+                        
+                        if (nameInput) nameInput.value = 'Mr. Test Industrial';
+                        if (emailInput) emailInput.value = 'test.industrial@example.com';
+                        if (companyInput) companyInput.value = 'Test Company Ltd';
+                        if (jobTitleInput) jobTitleInput.value = 'Senior Manager';
+                        
+                        document.getElementById('results-content').innerHTML += 
+                            `<p>Form fields filled successfully</p>`;
+                    }
+                }
+            }, 200);
+        }
+        
+        // Event listeners
+        document.getElementById('test-academic-btn').addEventListener('click', testAcademicSupervisorForm);
+        document.getElementById('test-industrial-btn').addEventListener('click', testIndustrialSupervisorForm);
+    </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Verification Test</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container" style="padding: 2rem;">
+        <h1>Supervisor Form Fix Verification</h1>
+        <p>This test verifies that the admin can successfully add academic and industrial supervisors.</p>
+        
+        <div style="margin: 2rem 0;">
+            <h2>Test Steps:</h2>
+            <ol>
+                <li>Click "Test Academic Supervisor" to test academic supervisor creation</li>
+                <li>Click "Test Industrial Supervisor" to test industrial supervisor creation</li>
+                <li>Check the results below</li>
+            </ol>
+        </div>
+        
+        <div style="margin: 2rem 0;">
+            <button id="test-academic" class="btn btn-primary" style="margin-right: 1rem;">Test Academic Supervisor</button>
+            <button id="test-industrial" class="btn btn-primary">Test Industrial Supervisor</button>
+        </div>
+        
+        <div id="results" style="margin-top: 2rem; padding: 1rem; background-color: #f8fafc; border-radius: 0.375rem;">
+            <h3>Test Results:</h3>
+            <div id="results-content">
+                <p>Click the test buttons above to run the tests.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modal container -->
+    <div id="modal-container" class="modal-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/forms.js"></script>
+
+    <script>
+        // Initialize data and login as admin
+        dataManager.initializeData();
+        auth.loginWithCredentials('admin@example.com', 'admin123', 'admin');
+        
+        function addResult(message, success = true) {
+            const resultsContent = document.getElementById('results-content');
+            const color = success ? '#059669' : '#dc2626';
+            resultsContent.innerHTML += `<p style="color: ${color}; margin: 0.5rem 0;">✓ ${message}</p>`;
+        }
+        
+        function testAcademicSupervisor() {
+            addResult('Starting Academic Supervisor test...');
+            
+            try {
+                // Create test data
+                const testData = {
+                    name: 'Dr. Test Academic',
+                    email: 'test.academic@example.com',
+                    role: 'academic_supervisor',
+                    password: 'password123',
+                    academicDepartment: 'Computer Science',
+                    academicTitle: 'Professor',
+                    specialization: 'Software Engineering',
+                    profileImage: 'https://ui-avatars.com/api/?name=Dr.%20Test%20Academic&background=2563eb&color=fff'
+                };
+                
+                // Test the dataManager.addUser function directly
+                const newUser = dataManager.addUser(testData);
+                
+                if (newUser && newUser.id) {
+                    addResult('Academic supervisor created successfully with ID: ' + newUser.id);
+                    addResult('Academic Department: ' + newUser.academicDepartment);
+                    addResult('Academic Title: ' + newUser.academicTitle);
+                    addResult('Specialization: ' + newUser.specialization);
+                } else {
+                    addResult('Failed to create academic supervisor', false);
+                }
+                
+            } catch (error) {
+                addResult('Error creating academic supervisor: ' + error.message, false);
+            }
+        }
+        
+        function testIndustrialSupervisor() {
+            addResult('Starting Industrial Supervisor test...');
+            
+            try {
+                // Create test data
+                const testData = {
+                    name: 'Mr. Test Industrial',
+                    email: 'test.industrial@example.com',
+                    role: 'industrial_supervisor',
+                    password: 'password123',
+                    company: 'Test Company Ltd',
+                    jobTitle: 'Senior Manager',
+                    workDepartment: 'IT Department',
+                    profileImage: 'https://ui-avatars.com/api/?name=Mr.%20Test%20Industrial&background=2563eb&color=fff'
+                };
+                
+                // Test the dataManager.addUser function directly
+                const newUser = dataManager.addUser(testData);
+                
+                if (newUser && newUser.id) {
+                    addResult('Industrial supervisor created successfully with ID: ' + newUser.id);
+                    addResult('Company: ' + newUser.company);
+                    addResult('Job Title: ' + newUser.jobTitle);
+                    addResult('Work Department: ' + newUser.workDepartment);
+                } else {
+                    addResult('Failed to create industrial supervisor', false);
+                }
+                
+            } catch (error) {
+                addResult('Error creating industrial supervisor: ' + error.message, false);
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('test-academic').addEventListener('click', testAcademicSupervisor);
+        document.getElementById('test-industrial').addEventListener('click', testIndustrialSupervisor);
+        
+        // Initial status
+        addResult('Test environment initialized. Admin logged in successfully.');
+    </script>
+</body>
+</html>

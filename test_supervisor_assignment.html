@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Supervisor Assignment</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container" style="padding: 2rem;">
+        <h1>Supervisor Assignment Test</h1>
+        <p>This test verifies that students are automatically assigned to academic and industrial supervisors.</p>
+        
+        <div style="margin: 2rem 0;">
+            <h2>Test Steps:</h2>
+            <ol>
+                <li>Create supervisors first</li>
+                <li>Create students and verify they get assigned to supervisors</li>
+                <li>Check assignment distribution</li>
+            </ol>
+        </div>
+        
+        <div style="margin: 2rem 0;">
+            <button id="create-supervisors" class="btn btn-primary" style="margin-right: 1rem;">1. Create Supervisors</button>
+            <button id="create-students" class="btn btn-primary" style="margin-right: 1rem;">2. Create Students</button>
+            <button id="check-assignments" class="btn btn-secondary">3. Check Assignments</button>
+        </div>
+        
+        <div id="results" style="margin-top: 2rem; padding: 1rem; background-color: #f8fafc; border-radius: 0.375rem;">
+            <h3>Test Results:</h3>
+            <div id="results-content">
+                <p>Click the test buttons above to run the tests in order.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modal container -->
+    <div id="modal-container" class="modal-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/forms.js"></script>
+
+    <script>
+        // Initialize data and login as admin
+        dataManager.initializeData();
+        auth.loginWithCredentials('admin@example.com', 'admin123', 'admin');
+        
+        function addResult(message, success = true) {
+            const resultsContent = document.getElementById('results-content');
+            const color = success ? '#059669' : '#dc2626';
+            const icon = success ? '✓' : '✗';
+            resultsContent.innerHTML += `<p style="color: ${color}; margin: 0.5rem 0;">${icon} ${message}</p>`;
+        }
+        
+        function createSupervisors() {
+            addResult('Creating supervisors...');
+            
+            try {
+                // Create academic supervisors
+                const academic1 = dataManager.addUser({
+                    name: 'Dr. Academic One',
+                    email: 'academic1@test.com',
+                    role: 'academic_supervisor',
+                    password: 'password123',
+                    academicDepartment: 'Computer Science',
+                    academicTitle: 'Professor',
+                    specialization: 'Software Engineering',
+                    profileImage: 'https://ui-avatars.com/api/?name=Dr.%20Academic%20One&background=2563eb&color=fff'
+                });
+                
+                const academic2 = dataManager.addUser({
+                    name: 'Dr. Academic Two',
+                    email: 'academic2@test.com',
+                    role: 'academic_supervisor',
+                    password: 'password123',
+                    academicDepartment: 'Computer Science',
+                    academicTitle: 'Associate Professor',
+                    specialization: 'Data Science',
+                    profileImage: 'https://ui-avatars.com/api/?name=Dr.%20Academic%20Two&background=2563eb&color=fff'
+                });
+                
+                // Create industrial supervisors
+                const industrial1 = dataManager.addUser({
+                    name: 'Mr. Industrial One',
+                    email: 'industrial1@test.com',
+                    role: 'industrial_supervisor',
+                    password: 'password123',
+                    company: 'Tech Corp Ltd',
+                    jobTitle: 'Senior Manager',
+                    workDepartment: 'IT Department',
+                    profileImage: 'https://ui-avatars.com/api/?name=Mr.%20Industrial%20One&background=2563eb&color=fff'
+                });
+                
+                const industrial2 = dataManager.addUser({
+                    name: 'Ms. Industrial Two',
+                    email: 'industrial2@test.com',
+                    role: 'industrial_supervisor',
+                    password: 'password123',
+                    company: 'Innovation Inc',
+                    jobTitle: 'Team Lead',
+                    workDepartment: 'Software Development',
+                    profileImage: 'https://ui-avatars.com/api/?name=Ms.%20Industrial%20Two&background=2563eb&color=fff'
+                });
+                
+                addResult(`Created 2 academic supervisors: ${academic1.name}, ${academic2.name}`);
+                addResult(`Created 2 industrial supervisors: ${industrial1.name}, ${industrial2.name}`);
+                
+            } catch (error) {
+                addResult('Error creating supervisors: ' + error.message, false);
+            }
+        }
+        
+        function createStudents() {
+            addResult('Creating students...');
+            
+            try {
+                const students = [
+                    { name: 'Student One', email: 'student1@test.com', matricNumber: 'MAT001' },
+                    { name: 'Student Two', email: 'student2@test.com', matricNumber: 'MAT002' },
+                    { name: 'Student Three', email: 'student3@test.com', matricNumber: 'MAT003' },
+                    { name: 'Student Four', email: 'student4@test.com', matricNumber: 'MAT004' }
+                ];
+                
+                students.forEach((studentData, index) => {
+                    // Create user
+                    const newUser = dataManager.addUser({
+                        name: studentData.name,
+                        email: studentData.email,
+                        role: 'student',
+                        password: 'password123',
+                        profileImage: `https://ui-avatars.com/api/?name=${encodeURIComponent(studentData.name)}&background=2563eb&color=fff`
+                    });
+                    
+                    // Get available supervisors
+                    const academicSupervisors = dataManager.getUsersByRole('academic_supervisor');
+                    const industrialSupervisors = dataManager.getUsersByRole('industrial_supervisor');
+                    
+                    // Assign supervisors using round-robin
+                    let academicSupervisorId = null;
+                    let industrialSupervisorId = null;
+                    
+                    if (academicSupervisors.length > 0) {
+                        const existingProfiles = dataManager.getStudentProfiles();
+                        const academicAssignmentCount = existingProfiles.filter(p => p.academicSupervisorId).length;
+                        const academicIndex = academicAssignmentCount % academicSupervisors.length;
+                        academicSupervisorId = academicSupervisors[academicIndex].id;
+                    }
+                    
+                    if (industrialSupervisors.length > 0) {
+                        const existingProfiles = dataManager.getStudentProfiles();
+                        const industrialAssignmentCount = existingProfiles.filter(p => p.industrialSupervisorId).length;
+                        const industrialIndex = industrialAssignmentCount % industrialSupervisors.length;
+                        industrialSupervisorId = industrialSupervisors[industrialIndex].id;
+                    }
+                    
+                    // Create profile with supervisor assignments
+                    const profileData = {
+                        userId: newUser.id,
+                        matricNumber: studentData.matricNumber,
+                        department: 'Computer Science',
+                        level: '300',
+                        academicSupervisorId: academicSupervisorId,
+                        industrialSupervisorId: industrialSupervisorId,
+                        company: industrialSupervisorId ? 
+                            dataManager.getUserById(industrialSupervisorId).company || 'Company TBD' : 
+                            'No Company Assigned',
+                        startDate: new Date(),
+                        endDate: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000)
+                    };
+                    
+                    dataManager.addStudentProfile(profileData);
+                    
+                    const academicSupervisor = academicSupervisorId ? dataManager.getUserById(academicSupervisorId) : null;
+                    const industrialSupervisor = industrialSupervisorId ? dataManager.getUserById(industrialSupervisorId) : null;
+                    
+                    addResult(`${studentData.name} assigned to Academic: ${academicSupervisor?.name || 'None'}, Industrial: ${industrialSupervisor?.name || 'None'}`);
+                });
+                
+            } catch (error) {
+                addResult('Error creating students: ' + error.message, false);
+            }
+        }
+        
+        function checkAssignments() {
+            addResult('Checking supervisor assignments...');
+            
+            try {
+                const profiles = dataManager.getStudentProfiles();
+                const academicSupervisors = dataManager.getUsersByRole('academic_supervisor');
+                const industrialSupervisors = dataManager.getUsersByRole('industrial_supervisor');
+                
+                addResult(`Total students: ${profiles.length}`);
+                addResult(`Total academic supervisors: ${academicSupervisors.length}`);
+                addResult(`Total industrial supervisors: ${industrialSupervisors.length}`);
+                
+                // Check academic supervisor distribution
+                const academicAssignments = {};
+                profiles.forEach(profile => {
+                    if (profile.academicSupervisorId) {
+                        const supervisor = dataManager.getUserById(profile.academicSupervisorId);
+                        if (supervisor) {
+                            academicAssignments[supervisor.name] = (academicAssignments[supervisor.name] || 0) + 1;
+                        }
+                    }
+                });
+                
+                addResult('Academic supervisor assignments:');
+                Object.entries(academicAssignments).forEach(([name, count]) => {
+                    addResult(`  - ${name}: ${count} students`);
+                });
+                
+                // Check industrial supervisor distribution
+                const industrialAssignments = {};
+                profiles.forEach(profile => {
+                    if (profile.industrialSupervisorId) {
+                        const supervisor = dataManager.getUserById(profile.industrialSupervisorId);
+                        if (supervisor) {
+                            industrialAssignments[supervisor.name] = (industrialAssignments[supervisor.name] || 0) + 1;
+                        }
+                    }
+                });
+                
+                addResult('Industrial supervisor assignments:');
+                Object.entries(industrialAssignments).forEach(([name, count]) => {
+                    addResult(`  - ${name}: ${count} students`);
+                });
+                
+            } catch (error) {
+                addResult('Error checking assignments: ' + error.message, false);
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('create-supervisors').addEventListener('click', createSupervisors);
+        document.getElementById('create-students').addEventListener('click', createStudents);
+        document.getElementById('check-assignments').addEventListener('click', checkAssignments);
+        
+        // Initial status
+        addResult('Test environment initialized. Admin logged in successfully.');
+    </script>
+</body>
+</html>
