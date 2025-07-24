@@ -1,6 +1,7 @@
 // Data management system for SIWES Electronic Workbook
+// Updated to use API service instead of localStorage
 
-// Initialize data with default values
+// Initialize data with default values (for fallback only)
 function initializeData() {
     const today = new Date();
     const subDays = (date, days) => new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
@@ -160,21 +161,34 @@ function initializeData() {
     }
 }
 
-// Data access functions
+// Data access functions - Hybrid approach with API and localStorage fallback
 const dataManager = {
+    // Check if API is available
+    isApiAvailable: async () => {
+        try {
+            const response = await fetch('http://localhost:3001/health');
+            return response.ok;
+        } catch (error) {
+            return false;
+        }
+    },
+
     // Users
-    getUsers: () => utils.storage.get('users') || [],
-    
+    getUsers: () => {
+        // For now, use localStorage until backend is fully integrated
+        return utils.storage.get('users') || [];
+    },
+
     getUserById: (id) => {
         const users = dataManager.getUsers();
         return users.find(user => user.id === id) || null;
     },
-    
+
     getUserByEmail: (email) => {
         const users = dataManager.getUsers();
         return users.find(user => user.email === email) || null;
     },
-    
+
     getUsersByRole: (role) => {
         const users = dataManager.getUsers();
         return users.filter(user => user.role === role);
@@ -284,13 +298,13 @@ const dataManager = {
     
     // Log Entries
     getLogEntries: () => utils.storage.get('logEntries') || [],
-    
+
     getLogEntriesByStudent: (studentId) => {
         const entries = dataManager.getLogEntries();
         return entries.filter(entry => entry.studentId === studentId)
                      .sort((a, b) => new Date(b.date) - new Date(a.date));
     },
-    
+
     addLogEntry: (entry) => {
         const entries = dataManager.getLogEntries();
         const newEntry = {
@@ -304,7 +318,7 @@ const dataManager = {
         utils.eventBus.emit('logEntryAdded', newEntry);
         return newEntry;
     },
-    
+
     updateLogEntry: (entryId, updates) => {
         const entries = dataManager.getLogEntries();
         const index = entries.findIndex(entry => entry.id === entryId);
@@ -320,7 +334,7 @@ const dataManager = {
         }
         return null;
     },
-    
+
     deleteLogEntry: (entryId) => {
         const entries = dataManager.getLogEntries();
         const filteredEntries = entries.filter(entry => entry.id !== entryId);

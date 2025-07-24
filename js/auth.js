@@ -91,7 +91,7 @@ class AuthManager {
         this.updateUI();
         utils.eventBus.emit('authStateChanged', null);
         utils.eventBus.emit('logoutSuccess');
-        
+
         // Redirect to home page
         window.router.navigate('/');
     }
