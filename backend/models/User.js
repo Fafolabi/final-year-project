@@ -37,10 +37,10 @@ module.exports = (sequelize) => {
       }
     },
     role: {
-      type: DataTypes.ENUM('student', 'academic_supervisor', 'industrial_supervisor', 'admin'),
+      type: DataTypes.ENUM('student', 'institution_supervisor', 'industrial_based_supervisor', 'admin'),
       allowNull: false,
       validate: {
-        isIn: [['student', 'academic_supervisor', 'industrial_supervisor', 'admin']]
+        isIn: [['student', 'institution_supervisor', 'industrial_based_supervisor', 'admin']]
       }
     },
     profileImage: {

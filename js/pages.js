@@ -100,20 +100,20 @@ function renderLoginPage() {
                                         Student Login
                                     </div>
                                 </button>
-                                <button class="btn btn-outline" style="width: 100%; margin-bottom: 0.75rem; padding: 1rem;" onclick="router.navigate('/login/academic-supervisor')">
+                                <button class="btn btn-outline" style="width: 100%; margin-bottom: 0.75rem; padding: 1rem;" onclick="router.navigate('/login/institution-supervisor')">
                                     <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                                         <svg xmlns="http://www.w3.org/2000/svg" style="height: 1.25rem; width: 1.25rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                         </svg>
-                                        Academic Supervisor Login
+                                        Institution-based Supervisor Login
                                     </div>
                                 </button>
-                                <button class="btn btn-outline" style="width: 100%; margin-bottom: 0.75rem; padding: 1rem;" onclick="router.navigate('/login/industrial-supervisor')">
+                                <button class="btn btn-outline" style="width: 100%; margin-bottom: 0.75rem; padding: 1rem;" onclick="router.navigate('/login/industrial-based-supervisor')">
                                     <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                                         <svg xmlns="http://www.w3.org/2000/svg" style="height: 1.25rem; width: 1.25rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 7.172V5L8 4z" />
                                         </svg>
-                                        Industrial Supervisor Login
+                                        Industrial-based Supervisor Login
                                     </div>
                                 </button>
                                 <button class="btn btn-outline" style="width: 100%; padding: 1rem;" onclick="router.navigate('/login/admin')">
@@ -219,15 +219,15 @@ function renderStudentLoginPage() {
     });
 }
 
-// Academic Supervisor Login page
-function renderAcademicSupervisorLoginPage() {
+// Institution-based Supervisor Login page
+function renderInstitutionSupervisorLoginPage() {
     const mainContent = document.getElementById('main-content');
 
     mainContent.innerHTML = `
         <div class="container">
             <div style="display: flex; align-items: center; justify-content: center; min-height: 80vh;">
                 ${components.createCard({
-                    title: 'Academic Supervisor Login',
+                    title: 'Institution-based Supervisor Login',
                     description: 'Enter your credentials to access the supervision portal',
                     className: 'login-card',
                     content: `
@@ -258,7 +258,7 @@ function renderAcademicSupervisorLoginPage() {
 
                             <div style="margin-top: 1.5rem;">
                                 <button type="submit" class="btn btn-primary" style="width: 100%;">
-                                    Login as Academic Supervisor
+                                    Login as Institution-based Supervisor
                                 </button>
                             </div>
 
@@ -288,7 +288,7 @@ function renderAcademicSupervisorLoginPage() {
         const email = formData.get('email').trim();
         const password = formData.get('password').trim();
 
-        if (auth.loginWithCredentials(email, password, 'academic_supervisor')) {
+        if (auth.loginWithCredentials(email, password, 'institution_supervisor')) {
             utils.showToast('Login Successful', 'Welcome back!', 'success');
             router.navigate('/dashboard');
         } else {
@@ -297,15 +297,15 @@ function renderAcademicSupervisorLoginPage() {
     });
 }
 
-// Industrial Supervisor Login page
-function renderIndustrialSupervisorLoginPage() {
+// Industrial-based Supervisor Login page
+function renderIndustrialBasedSupervisorLoginPage() {
     const mainContent = document.getElementById('main-content');
 
     mainContent.innerHTML = `
         <div class="container">
             <div style="display: flex; align-items: center; justify-content: center; min-height: 80vh;">
                 ${components.createCard({
-                    title: 'Industrial Supervisor Login',
+                    title: 'Industrial-based Supervisor Login',
                     description: 'Enter your credentials to access the workplace supervision portal',
                     className: 'login-card',
                     content: `
@@ -336,7 +336,7 @@ function renderIndustrialSupervisorLoginPage() {
 
                             <div style="margin-top: 1.5rem;">
                                 <button type="submit" class="btn btn-primary" style="width: 100%;">
-                                    Login as Industrial Supervisor
+                                    Login as Industrial-based Supervisor
                                 </button>
                             </div>
 
@@ -366,7 +366,7 @@ function renderIndustrialSupervisorLoginPage() {
         const email = formData.get('email').trim();
         const password = formData.get('password').trim();
 
-        if (auth.loginWithCredentials(email, password, 'industrial_supervisor')) {
+        if (auth.loginWithCredentials(email, password, 'industrial_based_supervisor')) {
             utils.showToast('Login Successful', 'Welcome back!', 'success');
             router.navigate('/dashboard');
         } else {
@@ -467,8 +467,8 @@ function renderDashboardPage() {
                 <p style="color: #64748b;">
                     Welcome back, ${utils.escapeHtml(user.name)}!
                     ${user.role === 'student' ? 'Manage your SIWES documentation here.' :
-                      user.role === 'academic_supervisor' ? 'Review student progress and provide academic feedback.' :
-                      user.role === 'industrial_supervisor' ? 'Monitor student workplace performance and provide industrial guidance.' :
+                      user.role === 'institution_supervisor' ? 'Review student progress and provide academic feedback.' :
+                      user.role === 'industrial_based_supervisor' ? 'Monitor student workplace performance and provide industrial guidance.' :
                       user.role === 'admin' ? 'Manage the SIWES system and users.' :
                       'Manage your SIWES documentation here.'}
                 </p>
@@ -486,7 +486,7 @@ function renderDashboardPage() {
         
         if (user.role === 'student') {
             dashboardContent.innerHTML = renderStudentDashboard(user.id);
-        } else if (user.role === 'academic_supervisor' || user.role === 'industrial_supervisor') {
+        } else if (user.role === 'institution_supervisor' || user.role === 'industrial_based_supervisor') {
             dashboardContent.innerHTML = renderSupervisorDashboard(user.id);
         } else if (user.role === 'admin') {
             dashboardContent.innerHTML = renderAdminDashboard(user.id);
@@ -768,13 +768,13 @@ function renderStudentDashboard(userId) {
                                     </div>
                                     ${report.supervisorFeedback ? `
                                         <div style="background-color: #f8fafc; padding: 1rem; border-radius: 0.375rem; border-left: 4px solid #2563eb; margin-bottom: 0.75rem;">
-                                            <p style="font-weight: 500; margin-bottom: 0.5rem;">Academic Supervisor Feedback:</p>
+                                            <p style="font-weight: 500; margin-bottom: 0.5rem;">Institution-based Supervisor Feedback:</p>
                                             <p style="color: #374151;">${utils.escapeHtml(report.supervisorFeedback)}</p>
                                         </div>
                                     ` : ''}
                                     ${report.industrialSupervisorFeedback ? `
                                         <div style="background-color: #f0fdf4; padding: 1rem; border-radius: 0.375rem; border-left: 4px solid #16a34a;">
-                                            <p style="font-weight: 500; margin-bottom: 0.5rem;">Industrial Supervisor Comments (Weekly Check-in):</p>
+                                            <p style="font-weight: 500; margin-bottom: 0.5rem;">Industrial-based Supervisor Comments (Weekly Check-in):</p>
                                             <p style="color: #374151;">${utils.escapeHtml(report.industrialSupervisorFeedback)}</p>
                                         </div>
                                     ` : ''}
@@ -798,8 +798,8 @@ function renderSupervisorDashboard(userId) {
     const user = auth.getCurrentUser();
     const supervisedStudents = dataManager.getStudentsBySupervisor(userId);
     const pendingReports = dataManager.getPendingReports(userId);
-    const isAcademicSupervisor = user.role === 'academic_supervisor';
-    const isIndustrialSupervisor = user.role === 'industrial_supervisor';
+    const isInstitutionSupervisor = user.role === 'institution_supervisor';
+    const isIndustrialBasedSupervisor = user.role === 'industrial_based_supervisor';
 
     return components.createTabs({
         tabs: [
@@ -841,13 +841,13 @@ function renderSupervisorDashboard(userId) {
                                                     </p>
                                                     ${studentProfile?.matricNumber ? `<p style="font-size: 0.75rem; color: #059669; font-weight: 500;">Matric: ${utils.escapeHtml(studentProfile.matricNumber)}</p>` : ''}
                                                 </div>
-                                                ${isAcademicSupervisor ? `
-                                                    <button class="btn btn-primary btn-sm" onclick="reviewReport('${report.id}')" title="Academic Supervisor Feedback">
-                                                        Academic Review
+                                                ${isInstitutionSupervisor ? `
+                                                    <button class="btn btn-primary btn-sm" onclick="reviewReport('${report.id}')" title="Institution-based Supervisor Feedback">
+                                                        Institution Review
                                                     </button>
                                                 ` : ''}
-                                                ${isIndustrialSupervisor ? `
-                                                    <button class="btn btn-outline btn-sm" onclick="addIndustrialSupervisorComment('${report.id}')" title="Industrial Supervisor Comments">
+                                                ${isIndustrialBasedSupervisor ? `
+                                                    <button class="btn btn-outline btn-sm" onclick="addIndustrialBasedSupervisorComment('${report.id}')" title="Industrial-based Supervisor Comments">
                                                         Industrial Comments
                                                     </button>
                                                 ` : ''}
@@ -910,9 +910,9 @@ function renderSupervisorDashboard(userId) {
 function renderAdminDashboard(userId) {
     const users = dataManager.getUsers();
     const studentsCount = users.filter(user => user.role === 'student').length;
-    const academicSupervisorsCount = users.filter(user => user.role === 'academic_supervisor').length;
-    const industrialSupervisorsCount = users.filter(user => user.role === 'industrial_supervisor').length;
-    const supervisorsCount = academicSupervisorsCount + industrialSupervisorsCount;
+    const institutionSupervisorsCount = users.filter(user => user.role === 'institution_supervisor').length;
+    const industrialBasedSupervisorsCount = users.filter(user => user.role === 'industrial_based_supervisor').length;
+    const supervisorsCount = institutionSupervisorsCount + industrialBasedSupervisorsCount;
 
     return components.createTabs({
         tabs: [
@@ -1010,11 +1010,11 @@ function renderAdminDashboard(userId) {
                                     </div>
                                     <div style="text-align: right;">
                                         ${components.createBadge({
-                                            text: user.role === 'academic_supervisor' ? 'Academic Supervisor' :
-                                                  user.role === 'industrial_supervisor' ? 'Industrial Supervisor' :
+                                            text: user.role === 'institution_supervisor' ? 'Institution-based Supervisor' :
+                                                  user.role === 'industrial_based_supervisor' ? 'Industrial-based Supervisor' :
                                                   user.role.charAt(0).toUpperCase() + user.role.slice(1),
                                             variant: user.role === 'admin' ? 'default' :
-                                                    (user.role === 'academic_supervisor' || user.role === 'industrial_supervisor') ? 'secondary' : 'outline'
+                                                    (user.role === 'institution_supervisor' || user.role === 'industrial_based_supervisor') ? 'secondary' : 'outline'
                                         })}
                                     </div>
                                 </div>
@@ -1073,21 +1073,21 @@ function renderUserManagementPage() {
 
                                         return profileInfo;
                                     })() : ''}
-                                    ${user.role === 'academic_supervisor' && user.academicDepartment ? `
+                                    ${user.role === 'institution_supervisor' && user.academicDepartment ? `
                                         <p style="font-size: 0.75rem; color: #64748b;">${utils.escapeHtml(user.academicDepartment)}</p>
                                     ` : ''}
-                                    ${user.role === 'industrial_supervisor' && user.company ? `
+                                    ${user.role === 'industrial_based_supervisor' && user.company ? `
                                         <p style="font-size: 0.75rem; color: #64748b;">${utils.escapeHtml(user.company)}</p>
                                     ` : ''}
                                 </div>
                             </div>
                             <div style="display: flex; align-items: center; gap: 1rem;">
                                 ${components.createBadge({
-                                    text: user.role === 'academic_supervisor' ? 'Academic Supervisor' :
-                                          user.role === 'industrial_supervisor' ? 'Industrial Supervisor' :
+                                    text: user.role === 'institution_supervisor' ? 'Institution-based Supervisor' :
+                                          user.role === 'industrial_based_supervisor' ? 'Industrial-based Supervisor' :
                                           user.role.charAt(0).toUpperCase() + user.role.slice(1),
                                     variant: user.role === 'admin' ? 'default' :
-                                            (user.role === 'academic_supervisor' || user.role === 'industrial_supervisor') ? 'secondary' : 'outline'
+                                            (user.role === 'institution_supervisor' || user.role === 'industrial_based_supervisor') ? 'secondary' : 'outline'
                                 })}
                                 ${user.role === 'student' ? `
                                     <button class="btn btn-secondary btn-sm" onclick="showAssignSupervisorsForm('${user.id}')" style="margin-right: 0.5rem;">Assign Supervisors</button>
@@ -1213,8 +1213,8 @@ window.pages = {
     renderHomePage,
     renderLoginPage,
     renderStudentLoginPage,
-    renderAcademicSupervisorLoginPage,
-    renderIndustrialSupervisorLoginPage,
+    renderInstitutionSupervisorLoginPage,
+    renderIndustrialBasedSupervisorLoginPage,
     renderAdminLoginPage,
     renderDashboardPage,
     renderProfilePage,

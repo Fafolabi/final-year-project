@@ -27,8 +27,8 @@ async function seedDatabase() {
         id: 'user-2',
         name: 'Dr. Jane Smith',
         email: 'jane.smith@example.com',
-        password: 'academic123',
-        role: 'academic_supervisor',
+        password: 'institution123',
+        role: 'institution_supervisor',
         profileImage: 'https://randomuser.me/api/portraits/women/1.jpg',
       },
       {
@@ -44,7 +44,7 @@ async function seedDatabase() {
         name: 'Mr. Robert Johnson',
         email: 'robert.johnson@techsolutions.com',
         password: 'industrial123',
-        role: 'industrial_supervisor',
+        role: 'industrial_based_supervisor',
         profileImage: 'https://randomuser.me/api/portraits/men/3.jpg',
       },
     ], { individualHooks: true }); // Enable hooks for password hashing
@@ -61,8 +61,8 @@ async function seedDatabase() {
         department: 'Computer Science',
         level: '300',
         company: 'Tech Solutions Ltd',
-        academicSupervisorId: 'user-2',
-        industrialSupervisorId: 'user-4',
+        institutionSupervisorId: 'user-2',
+        industrialBasedSupervisorId: 'user-4',
         startDate: subDays(today, 30),
         endDate: addDays(today, 60),
       },
@@ -163,8 +163,8 @@ async function seedDatabase() {
     console.log('Database seeding completed successfully!');
     console.log('\nDemo Login Credentials:');
     console.log('Student: john.doe@example.com / student123');
-    console.log('Academic Supervisor: jane.smith@example.com / academic123');
-    console.log('Industrial Supervisor: robert.johnson@techsolutions.com / industrial123');
+    console.log('Institution-based Supervisor: jane.smith@example.com / institution123');
+    console.log('Industrial-based Supervisor: robert.johnson@techsolutions.com / industrial123');
     console.log('Admin: admin@example.com / admin123');
 
   } catch (error) {

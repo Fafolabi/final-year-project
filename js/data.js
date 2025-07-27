@@ -21,8 +21,8 @@ function initializeData() {
             id: 'user-2',
             name: 'Dr. Jane Smith',
             email: 'jane.smith@example.com',
-            password: 'academic123', // Demo password
-            role: 'academic_supervisor',
+            password: 'institution123', // Demo password
+            role: 'institution_supervisor',
             profileImage: 'https://randomuser.me/api/portraits/women/1.jpg',
         },
         {
@@ -38,7 +38,7 @@ function initializeData() {
             name: 'Mr. Robert Johnson',
             email: 'robert.johnson@techsolutions.com',
             password: 'industrial123', // Demo password
-            role: 'industrial_supervisor',
+            role: 'industrial_based_supervisor',
             profileImage: 'https://randomuser.me/api/portraits/men/3.jpg',
         },
     ];
@@ -52,8 +52,8 @@ function initializeData() {
             department: 'Computer Science',
             level: '300',
             company: 'Tech Solutions Ltd',
-            academicSupervisorId: 'user-2',
-            industrialSupervisorId: 'user-4',
+            institutionSupervisorId: 'user-2',
+            industrialBasedSupervisorId: 'user-4',
             startDate: subDays(today, 30),
             endDate: addDays(today, 60),
         },
@@ -232,8 +232,8 @@ const dataManager = {
 
         return profiles
             .filter(profile =>
-                profile.academicSupervisorId === supervisorId ||
-                profile.industrialSupervisorId === supervisorId ||
+                profile.institutionSupervisorId === supervisorId ||
+                profile.industrialBasedSupervisorId === supervisorId ||
                 profile.supervisorId === supervisorId // Backward compatibility
             )
             .map(profile => {
@@ -247,13 +247,13 @@ const dataManager = {
             });
     },
 
-    getStudentsByAcademicSupervisor: (supervisorId) => {
+    getStudentsByInstitutionSupervisor: (supervisorId) => {
         const profiles = dataManager.getStudentProfiles();
         const users = dataManager.getUsers();
 
         return profiles
             .filter(profile =>
-                profile.academicSupervisorId === supervisorId ||
+                profile.institutionSupervisorId === supervisorId ||
                 profile.supervisorId === supervisorId // Backward compatibility
             )
             .map(profile => {

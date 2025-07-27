@@ -83,27 +83,27 @@ const authorize = (...roles) => {
 // Check if user is student
 const isStudent = authorize('student');
 
-// Check if user is academic supervisor
-const isAcademicSupervisor = authorize('academic_supervisor');
+// Check if user is institution supervisor
+const isInstitutionSupervisor = authorize('institution_supervisor');
 
-// Check if user is industrial supervisor
-const isIndustrialSupervisor = authorize('industrial_supervisor');
+// Check if user is industrial-based supervisor
+const isIndustrialBasedSupervisor = authorize('industrial_based_supervisor');
 
 // Check if user is admin
 const isAdmin = authorize('admin');
 
 // Check if user is any type of supervisor
-const isSupervisor = authorize('academic_supervisor', 'industrial_supervisor');
+const isSupervisor = authorize('institution_supervisor', 'industrial_based_supervisor');
 
 // Check if user is admin or supervisor
-const isAdminOrSupervisor = authorize('admin', 'academic_supervisor', 'industrial_supervisor');
+const isAdminOrSupervisor = authorize('admin', 'institution_supervisor', 'industrial_based_supervisor');
 
 module.exports = {
   auth,
   authorize,
   isStudent,
-  isAcademicSupervisor,
-  isIndustrialSupervisor,
+  isInstitutionSupervisor,
+  isIndustrialBasedSupervisor,
   isAdmin,
   isSupervisor,
   isAdminOrSupervisor

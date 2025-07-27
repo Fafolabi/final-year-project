@@ -52,7 +52,7 @@ module.exports = (sequelize) => {
         len: [2, 200]
       }
     },
-    academicSupervisorId: {
+    institutionSupervisorId: {
       type: DataTypes.STRING,
       allowNull: true,
       references: {
@@ -60,7 +60,7 @@ module.exports = (sequelize) => {
         key: 'id'
       }
     },
-    industrialSupervisorId: {
+    industrialBasedSupervisorId: {
       type: DataTypes.STRING,
       allowNull: true,
       references: {
@@ -122,10 +122,10 @@ module.exports = (sequelize) => {
         fields: ['userId']
       },
       {
-        fields: ['academicSupervisorId']
+        fields: ['institutionSupervisorId']
       },
       {
-        fields: ['industrialSupervisorId']
+        fields: ['industrialBasedSupervisorId']
       }
     ]
   });

@@ -414,10 +414,10 @@ function showAddReportForm() {
     });
 }
 
-// Academic Supervisor Feedback Form
+// Institution-based Supervisor Feedback Form
 function reviewReport(reportId) {
     const user = auth.getCurrentUser();
-    if (!user || user.role !== 'academic_supervisor') return;
+    if (!user || user.role !== 'institution_supervisor') return;
     
     const report = dataManager.getWeeklyReports().find(r => r.id === reportId);
     if (!report) return;
@@ -531,8 +531,8 @@ function showAddUserForm() {
                         label: 'Role',
                         options: [
                             { value: 'student', label: 'Student' },
-                            { value: 'academic_supervisor', label: 'Academic Supervisor' },
-                            { value: 'industrial_supervisor', label: 'Industrial Supervisor' },
+                            { value: 'institution_supervisor', label: 'Institution-based Supervisor' },
+                            { value: 'industrial_based_supervisor', label: 'Industrial-based Supervisor' },
                             { value: 'admin', label: 'Administrator' }
                         ],
                         value: 'student',
@@ -569,8 +569,8 @@ function showAddUserForm() {
                         })}
                     </div>
                     
-                    <!-- Academic Supervisor Fields -->
-                    <div id="academic-supervisor-fields" style="display: none;">
+                    <!-- Institution-based Supervisor Fields -->
+                    <div id="institution-supervisor-fields" style="display: none;">
                         ${components.createFormInput({
                             name: 'academicDepartment',
                             label: 'Academic Department',
@@ -592,8 +592,8 @@ function showAddUserForm() {
                         })}
                     </div>
                     
-                    <!-- Industrial Supervisor Fields -->
-                    <div id="industrial-supervisor-fields" style="display: none;">
+                    <!-- Industrial-based Supervisor Fields -->
+                    <div id="industrial-based-supervisor-fields" style="display: none;">
                         ${components.createFormInput({
                             name: 'company',
                             label: 'Company',
@@ -629,8 +629,8 @@ function showAddUserForm() {
     setTimeout(() => {
         const roleSelect = document.querySelector('select[name="role"]');
         const studentFields = document.getElementById('student-fields');
-        const academicSupervisorFields = document.getElementById('academic-supervisor-fields');
-        const industrialSupervisorFields = document.getElementById('industrial-supervisor-fields');
+        const institutionSupervisorFields = document.getElementById('institution-supervisor-fields');
+        const industrialBasedSupervisorFields = document.getElementById('industrial-based-supervisor-fields');
 
     // Function to show/hide fields based on role
     const updateFieldsVisibility = (role) => {
@@ -642,20 +642,20 @@ function showAddUserForm() {
                 input.disabled = role !== 'student';
             });
         }
-        if (academicSupervisorFields) {
-            academicSupervisorFields.style.display = role === 'academic_supervisor' ? 'block' : 'none';
+        if (institutionSupervisorFields) {
+            institutionSupervisorFields.style.display = role === 'institution_supervisor' ? 'block' : 'none';
             // Disable/enable required validation for hidden fields
-            const academicInputs = academicSupervisorFields.querySelectorAll('input[required], select[required]');
-            academicInputs.forEach(input => {
-                input.disabled = role !== 'academic_supervisor';
+            const institutionInputs = institutionSupervisorFields.querySelectorAll('input[required], select[required]');
+            institutionInputs.forEach(input => {
+                input.disabled = role !== 'institution_supervisor';
             });
         }
-        if (industrialSupervisorFields) {
-            industrialSupervisorFields.style.display = role === 'industrial_supervisor' ? 'block' : 'none';
+        if (industrialBasedSupervisorFields) {
+            industrialBasedSupervisorFields.style.display = role === 'industrial_based_supervisor' ? 'block' : 'none';
             // Disable/enable required validation for hidden fields
-            const industrialInputs = industrialSupervisorFields.querySelectorAll('input[required], select[required]');
+            const industrialInputs = industrialBasedSupervisorFields.querySelectorAll('input[required], select[required]');
             industrialInputs.forEach(input => {
-                input.disabled = role !== 'industrial_supervisor';
+                input.disabled = role !== 'industrial_based_supervisor';
             });
         }
     };
@@ -697,7 +697,7 @@ function showAddUserForm() {
         }
         
         // Add role-specific data and validation
-        if (userData.role === 'academic_supervisor') {
+        if (userData.role === 'institution_supervisor') {
             const academicDepartment = formData.get('academicDepartment');
             const academicTitle = formData.get('academicTitle');
             const specialization = formData.get('specialization');
@@ -705,7 +705,7 @@ function showAddUserForm() {
 
 
             if (!academicDepartment || !academicDepartment.trim() || !academicTitle || !academicTitle.trim()) {
-                utils.showToast('Error', 'Please fill in all required fields for Academic Supervisor', 'error');
+                utils.showToast('Error', 'Please fill in all required fields for Institution-based Supervisor', 'error');
                 return;
             }
 
@@ -713,7 +713,7 @@ function showAddUserForm() {
             userData.academicTitle = academicTitle.trim();
             userData.specialization = specialization ? specialization.trim() : '';
 
-        } else if (userData.role === 'industrial_supervisor') {
+        } else if (userData.role === 'industrial_based_supervisor') {
             const company = formData.get('company');
             const jobTitle = formData.get('jobTitle');
             const workDepartment = formData.get('workDepartment');
@@ -721,7 +721,7 @@ function showAddUserForm() {
 
 
             if (!company || !company.trim() || !jobTitle || !jobTitle.trim()) {
-                utils.showToast('Error', 'Please fill in all required fields for Industrial Supervisor', 'error');
+                utils.showToast('Error', 'Please fill in all required fields for Industrial-based Supervisor', 'error');
                 return;
             }
 
@@ -733,8 +733,8 @@ function showAddUserForm() {
         const newUser = dataManager.addUser(userData);
 
         // Variables for supervisor assignment tracking
-        let academicSupervisorId = null;
-        let industrialSupervisorId = null;
+        let institutionSupervisorId = null;
+        let industrialBasedSupervisorId = null;
 
         // If student, create profile
         if (userData.role === 'student') {
@@ -753,22 +753,22 @@ function showAddUserForm() {
             }
 
             // Get available supervisors
-            const academicSupervisors = dataManager.getUsersByRole('academic_supervisor');
-            const industrialSupervisors = dataManager.getUsersByRole('industrial_supervisor');
+            const institutionSupervisors = dataManager.getUsersByRole('institution_supervisor');
+            const industrialBasedSupervisors = dataManager.getUsersByRole('industrial_based_supervisor');
 
             // Assign supervisors using round-robin distribution for better load balancing
-            if (academicSupervisors.length > 0) {
+            if (institutionSupervisors.length > 0) {
                 const existingProfiles = dataManager.getStudentProfiles();
-                const academicAssignmentCount = existingProfiles.filter(p => p.academicSupervisorId).length;
-                const academicIndex = academicAssignmentCount % academicSupervisors.length;
-                academicSupervisorId = academicSupervisors[academicIndex].id;
+                const institutionAssignmentCount = existingProfiles.filter(p => p.institutionSupervisorId).length;
+                const institutionIndex = institutionAssignmentCount % institutionSupervisors.length;
+                institutionSupervisorId = institutionSupervisors[institutionIndex].id;
             }
 
-            if (industrialSupervisors.length > 0) {
+            if (industrialBasedSupervisors.length > 0) {
                 const existingProfiles = dataManager.getStudentProfiles();
-                const industrialAssignmentCount = existingProfiles.filter(p => p.industrialSupervisorId).length;
-                const industrialIndex = industrialAssignmentCount % industrialSupervisors.length;
-                industrialSupervisorId = industrialSupervisors[industrialIndex].id;
+                const industrialAssignmentCount = existingProfiles.filter(p => p.industrialBasedSupervisorId).length;
+                const industrialIndex = industrialAssignmentCount % industrialBasedSupervisors.length;
+                industrialBasedSupervisorId = industrialBasedSupervisors[industrialIndex].id;
             }
 
             const profileData = {
@@ -776,8 +776,8 @@ function showAddUserForm() {
                 matricNumber: matricNumber.trim(),
                 department: formData.get('department') || 'Computer Science',
                 level: formData.get('level') || '300',
-                academicSupervisorId: academicSupervisorId,
-                industrialSupervisorId: industrialSupervisorId,
+                institutionSupervisorId: institutionSupervisorId,
+                industrialBasedSupervisorId: industrialBasedSupervisorId,
                 company: industrialSupervisorId ?
                     dataManager.getUserById(industrialSupervisorId).company || 'Company TBD' :
                     'No Company Assigned',
@@ -787,15 +787,15 @@ function showAddUserForm() {
             dataManager.addStudentProfile(profileData);
 
             // Show supervisor assignment info
-            if (academicSupervisorId || industrialSupervisorId) {
+            if (institutionSupervisorId || industrialBasedSupervisorId) {
                 const assignmentInfo = [];
-                if (academicSupervisorId) {
-                    const academicSupervisor = dataManager.getUserById(academicSupervisorId);
-                    assignmentInfo.push(`Academic Supervisor: ${academicSupervisor.name}`);
+                if (institutionSupervisorId) {
+                    const institutionSupervisor = dataManager.getUserById(institutionSupervisorId);
+                    assignmentInfo.push(`Institution-based Supervisor: ${institutionSupervisor.name}`);
                 }
-                if (industrialSupervisorId) {
-                    const industrialSupervisor = dataManager.getUserById(industrialSupervisorId);
-                    assignmentInfo.push(`Industrial Supervisor: ${industrialSupervisor.name}`);
+                if (industrialBasedSupervisorId) {
+                    const industrialBasedSupervisor = dataManager.getUserById(industrialBasedSupervisorId);
+                    assignmentInfo.push(`Industrial-based Supervisor: ${industrialBasedSupervisor.name}`);
                 }
                 utils.showToast('Student Created',
                     `Student created and assigned to: ${assignmentInfo.join(', ')}`,
@@ -805,7 +805,7 @@ function showAddUserForm() {
         }
 
         // Show success message only if not already shown for student with supervisor assignment
-        if (userData.role !== 'student' || (!academicSupervisorId && !industrialSupervisorId)) {
+        if (userData.role !== 'student' || (!institutionSupervisorId && !industrialBasedSupervisorId)) {
             utils.showToast('Success', 'User created successfully', 'success');
         }
         utils.hideModal();
@@ -814,10 +814,10 @@ function showAddUserForm() {
     }, 100); // Close setTimeout
 }
 
-// Industrial Supervisor Comment Form
-function addIndustrialSupervisorComment(reportId) {
+// Industrial-based Supervisor Comment Form
+function addIndustrialBasedSupervisorComment(reportId) {
     const user = auth.getCurrentUser();
-    if (!user || user.role !== 'industrial_supervisor') return;
+    if (!user || user.role !== 'industrial_based_supervisor') return;
 
     const report = dataManager.getWeeklyReports().find(r => r.id === reportId);
     if (!report) return;
@@ -828,7 +828,7 @@ function addIndustrialSupervisorComment(reportId) {
         <div class="modal">
             <div style="padding: 1.5rem; max-width: 32rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h2 style="font-size: 1.25rem; font-weight: 600;">Industrial Supervisor Comments</h2>
+                    <h2 style="font-size: 1.25rem; font-weight: 600;">Industrial-based Supervisor Comments</h2>
                     <button type="button" onclick="utils.hideModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
                 </div>
 
@@ -877,7 +877,7 @@ function addIndustrialSupervisorComment(reportId) {
         });
 
         if (updatedReport) {
-            utils.showToast('Success', 'Industrial supervisor comments saved successfully', 'success');
+            utils.showToast('Success', 'Industrial-based supervisor comments saved successfully', 'success');
             utils.hideModal();
 
             // Refresh dashboard
@@ -1037,8 +1037,8 @@ function showAssignSupervisorsForm(studentId) {
         return;
     }
 
-    const academicSupervisors = dataManager.getUsersByRole('academic_supervisor');
-    const industrialSupervisors = dataManager.getUsersByRole('industrial_supervisor');
+    const institutionSupervisors = dataManager.getUsersByRole('institution_supervisor');
+    const industrialBasedSupervisors = dataManager.getUsersByRole('industrial_based_supervisor');
 
     const formContent = `
         <div class="modal">
@@ -1055,30 +1055,30 @@ function showAssignSupervisorsForm(studentId) {
 
                 <form id="assign-supervisors-form">
                     ${components.createFormSelect({
-                        name: 'academicSupervisorId',
-                        label: 'Academic Supervisor',
+                        name: 'institutionSupervisorId',
+                        label: 'Institution-based Supervisor',
                         options: [
-                            { value: '', label: 'Select Academic Supervisor' },
-                            ...academicSupervisors.map(supervisor => ({
+                            { value: '', label: 'Select Institution-based Supervisor' },
+                            ...institutionSupervisors.map(supervisor => ({
                                 value: supervisor.id,
                                 label: `${supervisor.name} (${supervisor.academicDepartment})`
                             }))
                         ],
-                        value: studentProfile.academicSupervisorId || '',
+                        value: studentProfile.institutionSupervisorId || '',
                         required: false
                     })}
 
                     ${components.createFormSelect({
-                        name: 'industrialSupervisorId',
-                        label: 'Industrial Supervisor',
+                        name: 'industrialBasedSupervisorId',
+                        label: 'Industrial-based Supervisor',
                         options: [
-                            { value: '', label: 'Select Industrial Supervisor' },
-                            ...industrialSupervisors.map(supervisor => ({
+                            { value: '', label: 'Select Industrial-based Supervisor' },
+                            ...industrialBasedSupervisors.map(supervisor => ({
                                 value: supervisor.id,
                                 label: `${supervisor.name} (${supervisor.company})`
                             }))
                         ],
-                        value: studentProfile.industrialSupervisorId || '',
+                        value: studentProfile.industrialBasedSupervisorId || '',
                         required: false
                     })}
 
@@ -1098,21 +1098,21 @@ function showAssignSupervisorsForm(studentId) {
         e.preventDefault();
 
         const formData = new FormData(e.target);
-        const academicSupervisorId = formData.get('academicSupervisorId') || null;
-        const industrialSupervisorId = formData.get('industrialSupervisorId') || null;
+        const institutionSupervisorId = formData.get('institutionSupervisorId') || null;
+        const industrialBasedSupervisorId = formData.get('industrialBasedSupervisorId') || null;
 
         // Update student profile
         const profiles = dataManager.getStudentProfiles();
         const profileIndex = profiles.findIndex(p => p.userId === studentId);
 
         if (profileIndex !== -1) {
-            profiles[profileIndex].academicSupervisorId = academicSupervisorId;
-            profiles[profileIndex].industrialSupervisorId = industrialSupervisorId;
+            profiles[profileIndex].institutionSupervisorId = institutionSupervisorId;
+            profiles[profileIndex].industrialBasedSupervisorId = industrialBasedSupervisorId;
 
-            // Update company if industrial supervisor is assigned
-            if (industrialSupervisorId) {
-                const industrialSupervisor = dataManager.getUserById(industrialSupervisorId);
-                profiles[profileIndex].company = industrialSupervisor?.company || 'Company TBD';
+            // Update company if industrial-based supervisor is assigned
+            if (industrialBasedSupervisorId) {
+                const industrialBasedSupervisor = dataManager.getUserById(industrialBasedSupervisorId);
+                profiles[profileIndex].company = industrialBasedSupervisor?.company || 'Company TBD';
             } else {
                 profiles[profileIndex].company = 'No Company Assigned';
             }
@@ -1120,13 +1120,13 @@ function showAssignSupervisorsForm(studentId) {
             utils.storage.set('studentProfiles', profiles);
 
             const assignmentInfo = [];
-            if (academicSupervisorId) {
-                const academicSupervisor = dataManager.getUserById(academicSupervisorId);
-                assignmentInfo.push(`Academic: ${academicSupervisor.name}`);
+            if (institutionSupervisorId) {
+                const institutionSupervisor = dataManager.getUserById(institutionSupervisorId);
+                assignmentInfo.push(`Institution-based: ${institutionSupervisor.name}`);
             }
-            if (industrialSupervisorId) {
-                const industrialSupervisor = dataManager.getUserById(industrialSupervisorId);
-                assignmentInfo.push(`Industrial: ${industrialSupervisor.name}`);
+            if (industrialBasedSupervisorId) {
+                const industrialBasedSupervisor = dataManager.getUserById(industrialBasedSupervisorId);
+                assignmentInfo.push(`Industrial-based: ${industrialBasedSupervisor.name}`);
             }
 
             utils.showToast('Success',
@@ -1161,7 +1161,7 @@ window.resetDemoData = resetDemoData;
 window.clearAllSystemData = clearAllSystemData;
 window.editUser = editUser;
 window.deleteUser = deleteUser;
-window.addIndustrialSupervisorComment = addIndustrialSupervisorComment;
+window.addIndustrialBasedSupervisorComment = addIndustrialBasedSupervisorComment;
 window.showAssignSupervisorsForm = showAssignSupervisorsForm;
 
 

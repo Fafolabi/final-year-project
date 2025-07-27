@@ -144,21 +144,21 @@ router.addRoute('/login/student', () => {
     }
 });
 
-router.addRoute('/login/academic-supervisor', () => {
-    // Academic supervisor login page - redirect to dashboard if already authenticated
+router.addRoute('/login/institution-supervisor', () => {
+    // Institution-based supervisor login page - redirect to dashboard if already authenticated
     if (auth.isAuthenticated()) {
         router.navigate('/dashboard');
     } else {
-        window.pages.renderAcademicSupervisorLoginPage();
+        window.pages.renderInstitutionSupervisorLoginPage();
     }
 });
 
-router.addRoute('/login/industrial-supervisor', () => {
-    // Industrial supervisor login page - redirect to dashboard if already authenticated
+router.addRoute('/login/industrial-based-supervisor', () => {
+    // Industrial-based supervisor login page - redirect to dashboard if already authenticated
     if (auth.isAuthenticated()) {
         router.navigate('/dashboard');
     } else {
-        window.pages.renderIndustrialSupervisorLoginPage();
+        window.pages.renderIndustrialBasedSupervisorLoginPage();
     }
 });
 
